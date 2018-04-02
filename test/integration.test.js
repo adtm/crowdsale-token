@@ -43,4 +43,43 @@ contract('Token Integration', accounts => {
 			);
 		}
 	});
+
+	it('should [burn] tokens', async function() {
+		const tokenWei = 1000;
+
+		await contract.burn(tokenWei);
+
+		const totalSupply = await contract.totalSupply.call();
+		assert.strictEqual(totalSupply.toString(), '999000');
+	});
+
+	it('should [burnFrom] tokens from an account', async function() {
+		const spender = owner;
+		const approver = accounts[3];
+
+		const tokenWei = 1000;
+		await contract.transfer(approver, tokenWei);
+		await contract.approve(spender, tokenWei, { from: approver });
+		await contract.burnFrom(approver, tokenWei, { from: spender });
+
+		const recipientBalanceAfter = await contract.balanceOf.call(accounts[3]);
+		assert.strictEqual(recipientBalanceAfter.toString(), '0');
+	});
+
+	it('should not [burnFrom] tokens from an account', async function() {
+		const spender = owner;
+		const approver = accounts[3];
+
+		const tokenWei = 1000;
+		await contract.transfer(approver, tokenWei);
+
+		try {
+			await contract.burnFrom(approver, tokenWei, { from: spender });
+		} catch (err) {
+			assert.strictEqual(
+				err.message,
+				'VM Exception while processing transaction: revert'
+			);
+		}
+	});
 });
