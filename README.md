@@ -1,10 +1,10 @@
-# Running tests locally
+## Running tests locally
 
 ```
   truffle test
 ```
 
-# Further improvements
+## Further improvements
 
 Token:
 
@@ -14,6 +14,6 @@ Token:
 
 Crowd-sale:
 
-* [ ]Transfer funds
+* [ ] Transfer funds
 * [ ] Is goal reached
 * [ ] Remaining limits
