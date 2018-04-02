@@ -1,0 +1,27 @@
+{
+  "name": "crowdsale-token",
+  "version": "0.0.1",
+  "description": "Crowd-sale token implementation",
+  "main": "truffle-config.js",
+  "directories": {
+    "test": "test"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/adtm/crowdsale-token.git"
+  },
+  "keywords": [
+    "crowdsale",
+    "token",
+    "ethereum"
+  ],
+  "author": "Tomas Eglinskas",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/adtm/crowdsale-token/issues"
+  },
+  "homepage": "https://github.com/adtm/crowdsale-token#readme"
+}
