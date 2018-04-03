@@ -14,7 +14,7 @@ contract('Token Integration', accounts => {
 		assert.strictEqual(name, 'Testy');
 	});
 
-	it('should pass if the initial token balance is 1 million', async function() {
+	it('should pass if the token [totalSupply] is 1 million', async function() {
 		const totalSupply = await contract.totalSupply.call();
 		assert.strictEqual(totalSupply.toString(), '1000000');
 	});
@@ -36,6 +36,38 @@ contract('Token Integration', accounts => {
 
 		try {
 			await contract.transfer(accounts[2], tokenWei, { from: accounts[2] });
+		} catch (err) {
+			assert.strictEqual(
+				err.message,
+				'VM Exception while processing transaction: revert'
+			);
+		}
+	});
+
+	it('should not [transfer] tokens with to a frozen account', async function() {
+		const tokenWei = 10000;
+		const recipient = accounts[2];
+
+		await contract.freezeAccount(recipient, true);
+
+		try {
+			await contract.transfer(recipient, tokenWei, { from: accounts[0] });
+		} catch (err) {
+			assert.strictEqual(
+				err.message,
+				'VM Exception while processing transaction: revert'
+			);
+		}
+	});
+
+	it('should not [transfer] tokens from a frozen account', async function() {
+		const tokenWei = 10000;
+		const recipient = accounts[2];
+
+		await contract.freezeAccount(recipient, true);
+
+		try {
+			await contract.transfer(accounts[0], tokenWei, { from: recipient });
 		} catch (err) {
 			assert.strictEqual(
 				err.message,
