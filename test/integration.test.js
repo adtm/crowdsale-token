@@ -51,7 +51,7 @@ contract('Token Integration', accounts => {
 		await contract.freezeAccount(recipient, true);
 
 		try {
-			await contract.transfer(recipient, tokenWei, { from: accounts[0] });
+			await contract.transfer(recipient, tokenWei, { from: owner });
 		} catch (err) {
 			assert.strictEqual(
 				err.message,
@@ -67,7 +67,7 @@ contract('Token Integration', accounts => {
 		await contract.freezeAccount(recipient, true);
 
 		try {
-			await contract.transfer(accounts[0], tokenWei, { from: recipient });
+			await contract.transfer(owner, tokenWei, { from: recipient });
 		} catch (err) {
 			assert.strictEqual(
 				err.message,
@@ -113,5 +113,19 @@ contract('Token Integration', accounts => {
 				'VM Exception while processing transaction: revert'
 			);
 		}
+	});
+
+	it('should allow to mint new tokens', async function() {
+		const mintAmount = 1000;
+
+		const totalSupplyBefore = await contract.totalSupply.call();
+
+		await contract.mintTokens(mintAmount, { from: owner });
+
+		const totalSupplyAfter = await contract.totalSupply.call();
+		assert.strictEqual(
+			(parseInt(totalSupplyBefore.toString(), 10) + mintAmount).toString(),
+			totalSupplyAfter.toString()
+		);
 	});
 });

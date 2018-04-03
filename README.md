@@ -8,8 +8,8 @@
 
 Token:
 
-* [ ] Mint new coins
-* [ ] Freeze accounts
+* [X] Mint new coins
+* [X] Freeze accounts
 * [ ] SetPrices / inner buyPrice && sellPrice
 
 Crowd-sale:
