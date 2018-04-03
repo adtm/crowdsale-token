@@ -1,8 +1,9 @@
 pragma solidity ^0.4.18;
 
+import './Ownable.sol';
 import 'zeppelin-solidity/contracts/math/SafeMath.sol';
 
-contract Token {
+contract Token is Ownable {
 
     using SafeMath for uint;
 
@@ -13,6 +14,7 @@ contract Token {
 
     mapping(address => uint) balances;
     mapping(address => mapping(address => uint)) allowed;
+    mapping(address => bool) public frozenAccounts;
 
     event Transfer(
       address _from,
@@ -31,6 +33,17 @@ contract Token {
       uint _value
     );
 
+    event FrozenAccount(
+      address account,
+      bool status
+    );
+
+    modifier notFrozen (address _to) {
+      require(!frozenAccounts[_to]);
+      require(!frozenAccounts[msg.sender]);
+      _;
+    }
+
     function Token() public {
         symbol = 'TET';
         name = 'Testy';
@@ -46,7 +59,11 @@ contract Token {
         return balances[_owner];
     }
 
-    function transfer(address _to, uint _value) public payable returns (bool success) {
+    function transfer(address _to, uint _value)
+      notFrozen(_to)
+      public payable
+      returns (bool success)
+    {
         require(_value > 0);
         require(balances[msg.sender] >= _value);
 
@@ -56,7 +73,11 @@ contract Token {
         return true;
     }
 
-    function transferFrom(address _from, address _to, uint _value) public payable returns (bool success) {
+    function transferFrom(address _from, address _to, uint _value)
+      notFrozen(_to)
+      public payable
+      returns (bool success)
+    {
         require(allowed[_from][msg.sender] > 0);
         require(_value > 0);
         require(allowed[_from][msg.sender] >= _value && balances[_from] >= _value);
@@ -69,7 +90,10 @@ contract Token {
         return true;
     }
 
-    function approve(address _spender, uint _value) public returns (bool success) {
+    function approve(address _spender, uint _value)
+      public
+      returns (bool success)
+   {
         allowed[msg.sender][_spender] = _value;
         Approval(msg.sender, _spender, _value);
         return true;
@@ -97,5 +121,15 @@ contract Token {
        totalSupply -= _value;
        Burn(_from, _value);
        return true;
+   }
+
+   function mintTokens(uint256 mintAmount) ownerOnly public {
+     totalSupply += mintAmount;
+     Transfer(0, this, mintAmount);
+   }
+
+   function freezeAccount(address account, bool status) ownerOnly public {
+     frozenAccounts[account] = status;
+     FrozenAccount(account, status);
    }
 }
