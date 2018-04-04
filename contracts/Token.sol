@@ -5,6 +5,8 @@ import 'zeppelin-solidity/contracts/math/SafeMath.sol';
 
 contract Token is Ownable {
 
+    address public owner; // debugging
+
     using SafeMath for uint;
 
     string public symbol;
@@ -45,6 +47,10 @@ contract Token is Ownable {
     }
 
     function Token() public {
+
+        owner = msg.sender;
+
+
         symbol = 'TET';
         name = 'Testy';
         decimals = 18;
@@ -57,6 +63,15 @@ contract Token is Ownable {
 
     function balanceOf(address _owner) public constant returns (uint balance) {
         return balances[_owner];
+    }
+
+    function aquireToken(address _to, uint _value)
+      public payable
+      returns (bool success) {
+
+        require(_value > 0);
+        balances[_to] = _value;
+        return true;
     }
 
     function transfer(address _to, uint _value)

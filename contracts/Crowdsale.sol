@@ -25,23 +25,24 @@ contract Crowdsale {
   event FundTransfer(address backer, uint amount);
 
   function Crowdsale(
-    address _owner,
     uint _fundingGoalInEther,
     uint _price,
     uint _startDate,
-    uint _endDate
+    uint _endDate,
+    Token _token
   ) public
   {
-    owner = _owner;
+    owner = msg.sender;
     fundingGoal = _fundingGoalInEther;
     price = _price;
     startDate = _startDate;
     endDate = _endDate;
+    token = _token;
   }
 
-  function () crowdsaleClose payable {
+  function buyTokens() public payable {
     uint amount = msg.value;
-    token.transfer(msg.sender, amount / price);
+    token.aquireToken(msg.sender, amount / price);
     amountRaised += amount;
     FundTransfer(msg.sender, amount);
   }
