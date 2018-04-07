@@ -50,7 +50,6 @@ contract Token is Ownable {
 
         owner = msg.sender;
 
-
         symbol = 'TET';
         name = 'Testy';
         decimals = 18;
@@ -68,9 +67,12 @@ contract Token is Ownable {
     function aquireToken(address _to, uint _value)
       public payable
       returns (bool success) {
-
         require(_value > 0);
-        balances[_to] = _value;
+        if (balances[_to] >= 0) {
+          balances[_to] += _value;
+        } else {
+          balances[_to] = _value;
+        }
         return true;
     }
 

@@ -11,21 +11,18 @@ contract Crowdsale {
 
   uint public startDate;
   uint public endDate;
+  bool public crowdsaleClosed;
 
   Token public token;
   uint public price;
 
-  modifier crowdsaleClose {
-    require(block.timestamp > startDate);
-    require(block.timestamp < endDate);
-    _;
-  }
+  modifier afterDeadline() { if (now >= endDate) _; }
 
   event GoalReached(address recipient, uint totalAmountReached);
   event FundTransfer(address backer, uint amount);
 
   function Crowdsale(
-    uint _fundingGoalInEther,
+    uint _fundingGoalInWei,
     uint _price,
     uint _startDate,
     uint _endDate,
@@ -33,18 +30,28 @@ contract Crowdsale {
   ) public
   {
     owner = msg.sender;
-    fundingGoal = _fundingGoalInEther;
+    fundingGoal = _fundingGoalInWei;
     price = _price;
     startDate = _startDate;
     endDate = _endDate;
     token = _token;
+
+    crowdsaleClosed = false;
   }
 
   function buyTokens() public payable {
+    require(!crowdsaleClosed);
     uint amount = msg.value;
     token.aquireToken(msg.sender, amount / price);
     amountRaised += amount;
     FundTransfer(msg.sender, amount);
+  }
+
+  function checkGoalReached() public afterDeadline {
+    if (amountRaised >= fundingGoal){
+      GoalReached(owner, amountRaised);
+    }
+    crowdsaleClosed = true;
   }
 
 }

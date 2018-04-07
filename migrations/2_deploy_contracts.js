@@ -8,7 +8,7 @@ module.exports = deployer => {
 			10000,
 			1,
 			1522869325,
-			1520467200,
+			1570497200,
 			Token.address
 		);
 	});

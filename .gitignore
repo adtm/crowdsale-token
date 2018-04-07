@@ -1,2 +1,4 @@
 node_modules
 build
+.credentials.txt
+.single-file.sol
