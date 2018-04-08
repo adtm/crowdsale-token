@@ -1,6 +1,6 @@
 const Token = artifacts.require('./Token.sol');
 
-contract('Token Integration', accounts => {
+contract('Token [integration] tests', accounts => {
 	let contract;
 
 	const owner = accounts[0];

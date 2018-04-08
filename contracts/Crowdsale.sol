@@ -47,13 +47,16 @@ contract Crowdsale {
     uint amount = msg.value;
     token.aquireToken(msg.sender, amount / price);
     amountRaised += amount;
+    if (amountRaised >= fundingGoal) {
+      goalReached = true;
+    }
+
     FundTransfer(msg.sender, amount);
   }
 
   function checkGoalReached() public afterDeadline {
     if (amountRaised >= fundingGoal){
       GoalReached(owner, amountRaised);
-      goalReached = true;
       crowdsaleClosed = true;
     }
   }

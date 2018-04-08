@@ -41,4 +41,20 @@ contract('Crowdsale [integration] tests', accounts => {
 			(tokenAmount * 2).toString()
 		);
 	});
+
+	it('should [goalReached] be true, when cap is reached', async function() {
+		const buyer = accounts[1];
+		const tokenAmount = 1000000000;
+
+		const goalReachedBefore = await crowdsaleContract.goalReached.call();
+		assert.strictEqual(goalReachedBefore, false);
+
+		await crowdsaleContract.buyTokens({
+			from: buyer,
+			value: tokenAmount
+		});
+
+		const goalReachedAfter = await crowdsaleContract.goalReached.call();
+		assert.strictEqual(goalReachedAfter, true);
+	});
 });
