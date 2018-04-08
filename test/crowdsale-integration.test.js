@@ -17,16 +17,28 @@ contract('Crowdsale [integration] tests', accounts => {
 		assert.strictEqual(crowdsaleOwner, owner);
 	});
 
-	it('should increment [amountRaised] when a [transfer] is done', async function() {
+	it('should increment [amountRaised] when a [buyTokens] is done', async function() {
 		const buyer = accounts[1];
 		const tokenAmount = 100;
 
-		await crowdsaleContract.buyTokens({
-			from: buyer,
-			value: tokenAmount
-		});
+		await Promise.all([
+			crowdsaleContract.buyTokens({
+				from: buyer,
+				value: tokenAmount
+			}),
+			crowdsaleContract.buyTokens({
+				from: buyer,
+				value: tokenAmount
+			})
+		]);
 
+		const buyerTokenAmount = await tokenContract.balanceOf(buyer);
 		const amountRaisedAfter = await crowdsaleContract.amountRaised.call();
-		assert.strictEqual(amountRaisedAfter.toString(), tokenAmount.toString());
+
+		assert.strictEqual(buyerTokenAmount.toString(), '100');
+		assert.strictEqual(
+			amountRaisedAfter.toString(),
+			(tokenAmount * 2).toString()
+		);
 	});
 });

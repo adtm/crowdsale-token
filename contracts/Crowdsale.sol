@@ -8,6 +8,7 @@ contract Crowdsale {
 
   uint public amountRaised;
   uint public fundingGoal;
+  bool public goalReached;
 
   uint public startDate;
   uint public endDate;
@@ -15,6 +16,7 @@ contract Crowdsale {
 
   Token public token;
   uint public price;
+
 
   modifier afterDeadline() { if (now >= endDate) _; }
 
@@ -37,6 +39,7 @@ contract Crowdsale {
     token = _token;
 
     crowdsaleClosed = false;
+    goalReached = false;
   }
 
   function buyTokens() public payable {
@@ -50,8 +53,9 @@ contract Crowdsale {
   function checkGoalReached() public afterDeadline {
     if (amountRaised >= fundingGoal){
       GoalReached(owner, amountRaised);
+      goalReached = true;
+      crowdsaleClosed = true;
     }
-    crowdsaleClosed = true;
   }
 
 }

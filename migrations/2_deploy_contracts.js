@@ -6,7 +6,7 @@ module.exports = deployer => {
 		return deployer.deploy(
 			Crowdsale,
 			10000,
-			1,
+			2,
 			1522869325,
 			1570497200,
 			Token.address
