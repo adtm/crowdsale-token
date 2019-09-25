@@ -25,6 +25,6 @@
   },
   "homepage": "https://github.com/adtm/crowdsale-token#readme",
   "dependencies": {
-    "zeppelin-solidity": "^1.8.0"
+    "zeppelin-solidity": "^1.12.0"
   }
 }
